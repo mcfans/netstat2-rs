@@ -4,7 +4,7 @@ use std::fmt::{self, Display};
 use std::mem::MaybeUninit;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use std::os::raw::{c_int, c_uint, c_void};
-use std::ptr;
+use std::{process, ptr};
 use std::{io, mem};
 
 use byteorder::{ByteOrder, NetworkEndian};
@@ -445,6 +445,12 @@ pub fn iterate_netstat_info(
     let ipv6 = af_flags.contains(AddressFamilyFlags::IPV6);
     let tcp = proto_flags.contains(ProtocolFlags::TCP);
     let udp = proto_flags.contains(ProtocolFlags::UDP);
+
+    let pids: Vec<i32> = if cfg!(target_os = "ios") {
+        vec![process::id() as i32]
+    } else {
+        list_pids(ProcType::ProcAllPIDS)?
+    };
 
     let pids = list_pids(ProcType::ProcAllPIDS)?;
 
