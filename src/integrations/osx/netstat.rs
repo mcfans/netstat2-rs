@@ -4,8 +4,8 @@ use std::fmt::{self, Display};
 use std::mem::MaybeUninit;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use std::os::raw::{c_int, c_uint, c_void};
-use std::{process, ptr};
 use std::{io, mem};
+use std::{process, ptr};
 
 use byteorder::{ByteOrder, NetworkEndian};
 use num_derive::FromPrimitive;
@@ -451,8 +451,6 @@ pub fn iterate_netstat_info(
     } else {
         list_pids(ProcType::ProcAllPIDS)?
     };
-
-    let pids = list_pids(ProcType::ProcAllPIDS)?;
 
     let mut results = vec![];
 
