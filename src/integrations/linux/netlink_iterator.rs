@@ -190,6 +190,9 @@ unsafe fn parse_tcp_state(diag_msg: &inet_diag_msg, rtalen: usize) -> TcpState {
     while RTA_OK!(attr, len) {
         if (&*attr).rta_type == INET_DIAG_INFO as u16 {
             let tcpi = &*(RTA_DATA!(attr) as *const tcp_info);
+            #[cfg(target_os = "linux")]
+            return TcpState::from(tcpi.tcpi_state);
+            #[cfg(target_os = "macos")]
             return TcpState::from(tcpi.state);
         }
         attr = RTA_NEXT!(attr, len);
